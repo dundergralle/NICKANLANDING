@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>DITT NAMN HÄR</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { height: 100%; }
+  body {
+    min-height: 100%;
+    min-height: 100dvh;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    padding-top: max(2rem, env(safe-area-inset-top));
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  .avatar { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; }
+  h1 { font-size: 1.5rem; font-weight: 600; color: #111; margin-bottom: 0.35rem; letter-spacing: -0.01em; }
+  .tagline { font-size: 0.9rem; color: #888; margin-bottom: 0.75rem; text-align: center; line-height: 1.4; }
+  .location-pill { display: inline-flex; align-items: center; gap: 6px; background: #f4f4f4; border-radius: 20px; padding: 6px 14px; font-size: 0.78rem; color: #555; margin-bottom: 1.75rem; min-height: 32px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .buttons { display: flex; flex-direction: column; gap: 0.65rem; width: 100%; max-width: 340px; }
+  .btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; padding: 0 1rem; border-radius: 50px; background: #7c3aed; color: #fff; font-size: 1rem; font-weight: 500; text-align: center; text-decoration: none; border: none; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; transition: opacity 0.1s; }
+  .btn:active { opacity: 0.75; }
+  @media (hover: hover) { .btn:hover { opacity: 0.88; } }
+</style>
+</head>
+<body>
+
+<script>
+if (window.location.pathname === '/link') {
+  window.location.replace('https://www.youtube.com/watch?v=QxYQeQtkYtM');
+}
+</script>
+
+<img class="avatar" src="YOUR_PROFILE_IMAGE_URL_HERE" alt="Profile" onerror="this.style.background='#e5e7eb';this.removeAttribute('src')">
+
+<h1>DITT NAMN HÄR</h1>
+<p class="tagline">DIN BESKRIVNING HÄR</p>
+
+<div class="location-pill">
+  <span class="dot"></span>
+  <span id="loc-text">5 minutes ago in: ...</span>
+</div>
+
+<div class="buttons">
+  <a class="btn" href="/link" target="_blank">Knapp 1</a>
+  <a class="btn" href="YOUR_URL_2_HERE" target="_blank">Knapp 2</a>
+  <a class="btn" href="YOUR_URL_3_HERE" target="_blank">Knapp 3</a>
+</div>
+
+<script>
+(function() {
+  var fallbacks = [
+    "Stockholm","Göteborg","Malmö","Uppsala","Linköping","Örebro","Västerås",
+    "Helsingborg","Norrköping","Jönköping","Umeå","Lund","Gävle","Borås","Sundsvall",
+    "Oslo","Bergen","Trondheim","Stavanger","Drammen","Kristiansand","Tromsø","Ålesund",
+    "København","Aarhus","Odense","Aalborg","Esbjerg","Randers","Kolding","Vejle",
+    "Helsinki","Espoo","Tampere","Vantaa","Oulu","Turku","Jyväskylä","Lahti"
+  ];
+  function setCity(city) {
+    var c = (city && city.trim().length > 1) ? city.trim() : fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    document.getElementById('loc-text').textContent = '5 minutes ago in: ' + c;
+  }
+  function get(url, extract) {
+    return fetch(url, { cache: 'no-store' }).then(function(r) { return r.json(); }).then(function(d) {
+      var v = extract(d);
+      if (!v || v.trim().length < 2) throw new Error('no city');
+      return v;
+    });
+  }
+  get('https://ipinfo.io/json', function(d) { return d && d.city; })
+    .catch(function() { return get('https://ip-api.com/json/?fields=city,regionName', function(d) { return d && (d.city || d.regionName); }); })
+    .catch(function() { return get('https://ipapi.co/json/', function(d) { return d && (d.city || d.region); }); })
+    .then(function(city) { setCity(city); })
+    .catch(function() { setCity(null); });
+})();
+</script>
+
+</body>
+</html>
