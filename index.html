@@ -221,6 +221,17 @@
 
   /* individual button styles */
   .btn-lax {
+     background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.4);
+  animation: wiggle 1.5s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
     background: linear-gradient(135deg, #7c3aed, #5b21b6);
     color: #fff;
     box-shadow: 0 4px 16px rgba(124,58,237,0.4);
