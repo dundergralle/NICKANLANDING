@@ -39,31 +39,6 @@
     display: none;
   }
 
-  /* ── FLOATING EMOJIS ── */
-  .emojis {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-    overflow: hidden;
-  }
-
-  .emoji {
-    position: absolute;
-    font-size: clamp(1.4rem, 3vw, 2.2rem);
-    opacity: 0;
-    animation: floatUp linear infinite;
-    will-change: transform, opacity;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-  }
-
-  @keyframes floatUp {
-    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
-    8%   { opacity: 0.7; }
-    92%  { opacity: 0.6; }
-    100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
-  }
-
   /* ── CARD ── */
   .card {
     position: relative;
@@ -256,9 +231,6 @@
 <div class="bg-img"></div>
 <div class="bg-overlay"></div>
 
-<!-- floating emojis -->
-<div class="emojis" id="emojiLayer"></div>
-
 <!-- main card -->
 <div class="card">
 
@@ -323,34 +295,6 @@
 </div>
 
 <script>
-/* ── EMOJI FLOAT ENGINE ── */
-(function() {
-  var emojis = ['📚','✂️','🧮','💻','📄','🕐','📏','🖊️'];
-  var layer = document.getElementById('emojiLayer');
-  var count = 22;
-
-  for (var i = 0; i < count; i++) {
-    (function(idx) {
-      var el = document.createElement('span');
-      el.className = 'emoji';
-      el.textContent = emojis[idx % emojis.length];
-
-      var leftPct = 3 + Math.random() * 94;
-      var duration = 9 + Math.random() * 14;
-      var delay = -(Math.random() * duration);
-      var size = 1.2 + Math.random() * 1.2;
-
-      el.style.cssText =
-        'left:' + leftPct + '%;' +
-        'font-size:' + size + 'rem;' +
-        'animation-duration:' + duration + 's;' +
-        'animation-delay:' + delay + 's;';
-
-      layer.appendChild(el);
-    })(i);
-  }
-})();
-
 /* ── GEOLOCATION PILL ── */
 (function() {
   var fallbacks = [
