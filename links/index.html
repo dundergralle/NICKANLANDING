@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>NickanTeach</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+
+  body {
+    min-height: 100dvh;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: max(2rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
+    position: relative;
+    overflow: hidden;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ── BACKGROUND ── */
+  .bg-img {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 0;
+  }
+
+  /* frosted overlay */
+  .bg-overlay {
+    display: none;
+  }
+
+  /* ── FLOATING EMOJIS ── */
+  .emojis {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .emoji {
+    position: absolute;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    opacity: 0;
+    animation: floatUp linear infinite;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+    8%   { opacity: 0.7; }
+    92%  { opacity: 0.6; }
+    100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ── CARD ── */
+  .card {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 360px;
+    background: #fff;
+    border: none;
+    border-radius: 28px;
+    padding: 2.4rem 2rem 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  /* ── AVATAR ── */
+  .avatar-wrap {
+    position: relative;
+    margin-bottom: 1.1rem;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2.5px solid rgba(255,255,255,0.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    display: block;
+  }
+
+  .avatar-ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #a78bfa, #818cf8, #38bdf8, #34d399, #a78bfa
+    );
+    z-index: -1;
+    animation: spinRing 4s linear infinite;
+    opacity: 0.8;
+  }
+
+  @keyframes spinRing {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── NAME ── */
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #111;
+    letter-spacing: -0.02em;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 0.55rem;
+    text-shadow: none;
+  }
+
+  /* ── TAGLINE ── */
+  .tagline {
+    font-size: 0.88rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 1.6rem;
+    max-width: 260px;
+    font-weight: 400;
+  }
+
+  /* ── LOCATION PILL ── */
+  .location-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.76rem;
+    color: #444;
+    margin-bottom: 0.9rem;
+    text-shadow: none;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 6px #4ade80;
+  }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* ── BUTTONS ── */
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+    background: #e8f4fd;
+    border-radius: 20px;
+    padding: 0.75rem;
+  }
+
+  .btn {
+    display: grid;
+    grid-template-columns: 52px 1fr 52px;
+    align-items: center;
+    width: 100%;
+    min-height: 50px;
+    padding: 0;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.97rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 0;
+    outline: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.12s ease;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.01em;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.15s;
+    border-radius: inherit;
+  }
+
+  .btn:active { transform: scale(0.97); opacity: 0.85; }
+  @media (hover: hover) { .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); } .btn:hover::before { opacity: 1; } }
+
+  .btn-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+  }
+  .btn-icon-wrap svg { display: block; flex-shrink: 0; }
+  .btn-label { text-align: center; }
+
+  /* individual button styles */
+ .btn-lax {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.4);
+  animation: wiggle 1.5s ease-in-out infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
+
+.btn-ig {
+    background: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(236,72,153,0.35);
+  }
+  .btn-x {
+    background: #000;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .btn-snap {
+    background: #FFFC00;
+    color: #000;
+    box-shadow: 0 4px 16px rgba(255,252,0,0.3);
+  }
+</style>
+</head>
+<body>
+
+<!-- background layers -->
+<div class="bg-img"></div>
+<div class="bg-overlay"></div>
+
+<!-- floating emojis -->
+<div class="emojis" id="emojiLayer"></div>
+
+<!-- main card -->
+<div class="card">
+
+  <div class="avatar-wrap">
+    <div class="avatar-ring"></div>
+    <img class="avatar"
+      src="https://raw.githubusercontent.com/dundergralle/NICKANLANDING/main/photo_28_2025-10-12_20-57-54.jpg"
+      alt="NickanTeach"
+      onerror="this.style.background='linear-gradient(135deg,#7c3aed,#ec4899)';this.removeAttribute('src')">
+  </div>
+
+  <div class="location-pill">
+    <span class="dot"></span>
+    <span id="loc-text">5 minutes ago in: ...</span>
+  </div>
+
+  <h1>NickanTeach</h1>
+
+  <p class="tagline">är du i behov av läxhjälp?<br>eller kanske blir det kvarsittning för dig 😉</p>
+
+  <div class="buttons">
+    <!-- LäxHjälp -->
+    <a class="btn btn-lax" href="länk" target="_blank">
+      <span class="btn-icon-wrap">
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="11" fill="none" stroke="white" stroke-width="1.8"/>
+          <text x="12" y="16" text-anchor="middle" font-family="'DM Sans', sans-serif" font-weight="700" font-size="9" fill="white">18+</text>
+        </svg>
+      </span>
+      <span class="btn-label">LäxHjälp</span>
+    </a>
+
+    <!-- Instagram -->
+    <a class="btn btn-ig" href="https://www.instagram.com/nickanteach" target="_blank">
+      <span class="btn-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="white" stroke-width="2"/>
+          <circle cx="12" cy="12" r="5" stroke="white" stroke-width="2"/>
+          <circle cx="17.5" cy="6.5" r="1.5" fill="white"/>
+        </svg>
+      </span>
+      <span class="btn-label">Instagram</span>
+    </a>
+
+    <!-- X -->
+    <a class="btn btn-x" href="https://x.com/nickanteach" target="_blank">
+      <span class="btn-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+        </svg>
+      </span>
+      <span class="btn-label">X</span>
+    </a>
+
+    <!-- Snapchat -->
+    <a class="btn btn-snap" href="https://www.snapchat.com/add/nickanteach" target="_blank">
+      <span class="btn-icon-wrap" style="font-size:1.3rem;">👻</span>
+      <span class="btn-label">Snapchat</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+/* ── EMOJI FLOAT ENGINE ── */
+(function() {
+  var emojis = ['📚','✂️','🧮','💻','📄','🕐','📏','🖊️'];
+  var layer = document.getElementById('emojiLayer');
+  var count = 22;
+
+  for (var i = 0; i < count; i++) {
+    (function(idx) {
+      var el = document.createElement('span');
+      el.className = 'emoji';
+      el.textContent = emojis[idx % emojis.length];
+
+      var leftPct = 3 + Math.random() * 94;
+      var duration = 9 + Math.random() * 14;
+      var delay = -(Math.random() * duration);
+      var size = 1.2 + Math.random() * 1.2;
+
+      el.style.cssText =
+        'left:' + leftPct + '%;' +
+        'font-size:' + size + 'rem;' +
+        'animation-duration:' + duration + 's;' +
+        'animation-delay:' + delay + 's;';
+
+      layer.appendChild(el);
+    })(i);
+  }
+})();
+
+/* ── GEOLOCATION PILL ── */
+(function() {
+  var fallbacks = [
+    "Stockholm","Göteborg","Malmö","Uppsala","Linköping","Örebro","Västerås",
+    "Helsingborg","Norrköping","Jönköping","Umeå","Lund","Gävle","Borås","Sundsvall",
+    "Oslo","Bergen","Trondheim","Stavanger","Drammen","Kristiansand","Tromsø","Ålesund",
+    "København","Aarhus","Odense","Aalborg","Esbjerg","Randers","Kolding","Vejle",
+    "Helsinki","Espoo","Tampere","Vantaa","Oulu","Turku","Jyväskylä","Lahti"
+  ];
+  function setCity(city) {
+    var c = (city && city.trim().length > 1)
+      ? city.trim()
+      : fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    document.getElementById('loc-text').textContent = '5 minutes ago in: ' + c;
+  }
+  function get(url, extract) {
+    return fetch(url, { cache: 'no-store' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        var v = extract(d);
+        if (!v || v.trim().length < 2) throw new Error('no city');
+        return v;
+      });
+  }
+  get('https://ipinfo.io/json', function(d) { return d && d.city; })
+    .catch(function() { return get('https://ip-api.com/json/?fields=city,regionName', function(d) { return d && (d.city || d.regionName); }); })
+    .catch(function() { return get('https://ipapi.co/json/', function(d) { return d && (d.city || d.region); }); })
+    .then(function(city) { setCity(city); })
+    .catch(function() { setCity(null); });
+})();
+</script>
+
+</body>
+</html>
